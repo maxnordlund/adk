@@ -50,7 +50,7 @@ Följande krav ställs på din lösning:
   konkordansen på rimlig tid. Det får inte ta mer än två minuter att skapa
   konkordansen på en Ubuntudator i datorsalarna.
 * Sökprogrammets utmatning ska inledas med en rad som anger antalet förekomster.
-  Därefter ska varje förekomst av ordet presenteras på varje rad med till 
+  Därefter ska varje förekomst av ordet presenteras på varje rad med till
   exempel 30 tecken före och 30 tecken efter. Ersätt radbyten med mellanslag.
   Om det finns fler än 25 förekomster bör programmet fråga användaren om hon
   vill ha förekomsterna utskrivna på skärmen.
@@ -124,7 +124,7 @@ testfall, skisser och labbkvittona redo. Ni kommer då att få redovisa följand
 
 * Visa i Parkours statistik att ni har parprogrammerat.
 * Visa en uppsättning testfall som ni har tagit fram för att kolla att
-  programmet gör rätt. Ni ska också kunna motivera varför ni valt just dessa 
+  programmet gör rätt. Ni ska också kunna motivera varför ni valt just dessa
   testfall.
 * Visa att programmet fungerar och är tillräckligt snabbt för era testfall och
   labbhandledarens testfall.
@@ -218,8 +218,8 @@ klarar av programspråken  Java, C, C++ och Python, men tidskraven i denna labb
 gör att vi avråder från  Python.
 
 ### Steg 1: Reducera problemet till flödesproblemet
-Du ska skriva ett program som löser matchningsproblemet med hjälp av en svart 
-låda som löser flödesproblemet. Programmet ska fungera enligt denna översiktliga 
+Du ska skriva ett program som löser matchningsproblemet med hjälp av en svart
+låda som löser flödesproblemet. Programmet ska fungera enligt denna översiktliga
 programstruktur:
 
 * Läs indata för matchningsproblemet från standard input.
@@ -264,8 +264,8 @@ Givet en bipartit graf G = (X,Y,E) finn en maximal matchning.
 
 ### Indata
 Den första raden består av två heltal som anger antalet hörn i X respektive Y.
-Den andra raden består av ett tal som anger |E|, det vill säga antalet kanter i 
-grafen. De följande |E| raderna består var och en av två heltal som svarar mot 
+Den andra raden består av ett tal som anger |E|, det vill säga antalet kanter i
+grafen. De följande |E| raderna består var och en av två heltal som svarar mot
 en kant.
 
 Hörnen numreras från 1 och uppåt. Om man angett a hörn i X och b hörn i Y så
@@ -273,28 +273,33 @@ låter vi X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. En kant anges med
 ändpunkterna (först X-hörnet och sedan Y-hörnet).
 
 _Exempel:_ En graf kan till exempel kodas så här.
---|--
- 2| 3
- 4| 
- 1| 3
- 1| 4
- 2| 3
- 2| 5
-Denna graf har alltså X = {1, 2} och Y = {3, 4, 5}. Kantmängden E innehåller 
+
+Rad | värde
+---:|------
+  1 | 2 3
+  2 | 4
+  3 | 1 3
+  4 | 1 4
+  5 | 2 3
+  6 | 2 5
+
+Denna graf har alltså X = {1, 2} och Y = {3, 4, 5}. Kantmängden E innehåller
 kanterna (1, 3), (1, 4), (2, 3) och (2, 5).
 
 ### Utdata
-Först skrivs en rad som är densamma som den första i indata, och därefter en rad 
-med ett heltal som anger antalet kanter i den funna matchningen. Därefter skrivs 
-en rad för varje kant som ingår i matchningen. Kanten beskrivs av ett talpar på 
+Först skrivs en rad som är densamma som den första i indata, och därefter en rad
+med ett heltal som anger antalet kanter i den funna matchningen. Därefter skrivs
+en rad för varje kant som ingår i matchningen. Kanten beskrivs av ett talpar på
 samma sätt som i indata.
 
 _Exempel:_ Om vi har grafen ovan som indata så kan utdata se ut så här.
---|--
- 2| 3
- 2| 
- 1| 3
- 2| 5
+
+Rad | värde
+---:|------
+  1 | 2 3
+  2 | 2
+  3 | 1 3
+  4 | 2 5
 
 ### Flödesproblemet
 Givet en flödesgraf G = (V,E) finn ett maximalt flöde. Lös flödesproblemet med
@@ -302,25 +307,25 @@ Edmonds-Karps algoritm, det vill säga Ford-Fulkersons algoritm där den kortast
 stigen hittas med breddenförstsökning.
 
 ### Ford-Fulkersons algoritm i pseudokod
-c[u,v] är kapaciteten från u till v, f[u,v] är flödet, cf[u,v] är 
+c[u,v] är kapaciteten från u till v, f[u,v] är flödet, cf[u,v] är
 restkapaciteten.
 
 ```
-for varje kant (u,v) i grafen do 
-    f[u,v]:=0; f[v,u]:=0 
-    cf[u,v]:=c[u,v]; cf[v,u]:=c[v,u] 
-while det finns en stig p från s till t i restflödesgrafen do 
-    r:=min(cf[u,v]: (u,v) ingår i p) 
-    for varje kant (u,v) i p do 
-         f[u,v]:=f[u,v]+r; f[v,u]:= -f[u,v] 
+for varje kant (u,v) i grafen do
+    f[u,v]:=0; f[v,u]:=0
+    cf[u,v]:=c[u,v]; cf[v,u]:=c[v,u]
+while det finns en stig p från s till t i restflödesgrafen do
+    r:=min(cf[u,v]: (u,v) ingår i p)
+    for varje kant (u,v) i p do
+         f[u,v]:=f[u,v]+r; f[v,u]:= -f[u,v]
          cf[u,v]:=c[u,v] - f[u,v]; cf[v,u]:=c[v,u] - f[v,u]
 ```
 
 ### Indata
 Den första raden består av ett heltal som anger antalet hörn i V.
-Den andra raden består av två heltal s och t som anger vilka hörn som är källa 
-respektive utlopp. Den tredje raden består av ett tal som anger |E|, det vill 
-säga antalet kanter i grafen. De följande |E| raderna består var och en av tre 
+Den andra raden består av två heltal s och t som anger vilka hörn som är källa
+respektive utlopp. Den tredje raden består av ett tal som anger |E|, det vill
+säga antalet kanter i grafen. De följande |E| raderna består var och en av tre
 heltal som svarar mot en kant.
 
 Hörnen numreras från 1 och uppåt. Om man angett a hörn i V så låter vi V = {1,
@@ -328,50 +333,54 @@ Hörnen numreras från 1 och uppåt. Om man angett a hörn i V så låter vi V =
 hörnet) följt av dess kapacitet.
 
 _Exempel:_ En graf kan till exempel kodas så här.
---|--|--
- 4|  | 
- 1| 4| 
- 5|  | 
- 1| 2| 1
- 1| 3| 2
- 2| 4| 2
- 3| 2| 2
- 3| 4| 1
+
+Rad | värde
+---:|------
+  1 | 4
+  2 | 1 4
+  3 | 5
+  4 | 1 2 1
+  5 | 1 3 2
+  6 | 2 4 2
+  7 | 3 2 2
+  8 | 3 4 1
 
 ### Utdata
 Den första raden består av ett heltal som anger antalet hörn i V.
 Den andra raden består av tre heltal s,t, samt flödet från s till t.
-Den tredje raden består av ett heltal som anger antalet kanter med positivt 
-flöde. Därefter skrivs en rad för varje sådan kant. Kanten beskrivs av tre tal 
+Den tredje raden består av ett heltal som anger antalet kanter med positivt
+flöde. Därefter skrivs en rad för varje sådan kant. Kanten beskrivs av tre tal
 på liknande sätt som i indata, men i stället för kapacitet har vi nu flöde.
 
 _Exempel:_ Om vi har grafen ovan som indata så kan utdata se ut så här.
---|--|--
- 4|  | 
- 1| 4| 3
- 5|  | 
- 1| 2| 1
- 1| 3| 2
- 2| 4| 2
- 3| 2| 1
- 3| 4| 1
+
+Rad | värde
+---:|------
+  1 | 4
+  2 | 1 4 3
+  3 | 5
+  4 | 1 2 1
+  5 | 1 3 2
+  6 | 2 4 2
+  7 | 3 2 1
+  8 | 3 4 1
 
 ### Testning
-I katalogen `/info/adk14/labb3` ligger programmen bipgen, flowgen, maxflow, 
+I katalogen `/info/adk14/labb3` ligger programmen bipgen, flowgen, maxflow,
 combine och matchtest som du kan köra för att testa dina program.
 
 * Programmet bipgen genererar en slumpvis vald bipartit graf. Grafen skrivs på
   _standard output_ på ovan angivet format för indata till matchningsprogrammet.
   ```shell
-  /info/adk14/labb3/bipgen x y e 
+  /info/adk14/labb3/bipgen x y e
   ```
   ger en graf med x hörn i X, y hörn i Y och e kanter.
-* Programmet flowgen genererar en slumpvis vald flödesgraf. Grafen skrivs på 
-  _standard output_ på ovan angivet format för indata till flödesprogrammet. 
+* Programmet flowgen genererar en slumpvis vald flödesgraf. Grafen skrivs på
+  _standard output_ på ovan angivet format för indata till flödesprogrammet.
   ```shell
-  /info/adk14/labb3/flowgen v e c 
+  /info/adk14/labb3/flowgen v e c
   ```
-  ger en graf med v hörn och e kanter vars kapaciteter är positiva heltal inte 
+  ger en graf med v hörn och e kanter vars kapaciteter är positiva heltal inte
   större än c.
 * Programmet maxflow löser flödesproblemet och kan användas som svart låda i
   steg 1. maxflow tar en flödesgraf på standard input och skriver ut ett
@@ -380,19 +389,19 @@ combine och matchtest som du kan köra för att testa dina program.
   att få ditt program att prata med den svarta lådan.
   ```shell
   /info/adk14/labb3/combine java MatchReduce \; /info/adk14/labb3/maxflow <
-  graffil > matchfil 
+  graffil > matchfil
   ```
   kommer att köra java MatchReduce som lösning på steg 1, och använda kursens
   maxflow-program som svart låda. Indatagrafen tas från filen graffil och utdata
   skickas till filen matchfil.
 * Programmet matchtest läser en graf följt av utdata från ett matchningsprogram
   (alltså, först grafen och sedan matchningen) och kontrollerar att matchningen
-  är maximalt stor. Utdata skrivs på standard outputoch kan vara Matchning av 
+  är maximalt stor. Utdata skrivs på standard outputoch kan vara Matchning av
   maximal storlek, Matchning av mindre än maximal storlek eller Ingen matchning.
   Så här kan du använda bipgen och matchtest för att testa din lösning på steg 3
   (minlabb).
   ```shell
-  /info/adk14/labb3/bipgen 5000 5000 10000 > graffil  minlabb < graffil > 
+  /info/adk14/labb3/bipgen 5000 5000 10000 > graffil  minlabb < graffil >
   matchfil
   cat graffil matchfil | /info/adk14/labb3/matchtest
   ```
@@ -415,26 +424,26 @@ medför extraarbete eftersom de b åda inte tål varandra och rollerna ska besä
 så att de aldrig spelar mot varandra. Rollbesättningsproblemet är att avgöra
 ifall alla roller kan besättas med de skådespelare som finns till hands.
 
-Ingående parametrar är alltså: 
-Roller r1, r2,... , rn 
-Skådespelare p1, p2,... ,pk 
-Villkor typ 1 (till varje roll): rt kan besättas av p1, p2, p6 
+Ingående parametrar är alltså:
+Roller r1, r2,... , rn
+Skådespelare p1, p2,... ,pk
+Villkor typ 1 (till varje roll): rt kan besättas av p1, p2, p6
 Villkor typ 2 (till varje scen): i su medverkar r1, r3, r5, r6 och r7
 
 ### Indataformat
 Rad ett består av tre tal: n, s och k (antal roller, antal scener och antal
-skådespelare, n≥1, s≥1, k≥2). 
+skådespelare, n≥1, s≥1, k≥2).
 
-De följande n raderna representerar villkoren av typ 1 och börjar med ett tal 
-som anger antalet efterföljande tal på raden, följt av de möjliga skådespelarnas 
-nummer (mellan 1 och k, kursiverade i exemplen nedan). 
+De följande n raderna representerar villkoren av typ 1 och börjar med ett tal
+som anger antalet efterföljande tal på raden, följt av de möjliga skådespelarnas
+nummer (mellan 1 och k, kursiverade i exemplen nedan).
 
-De sista s raderna är villkor av typ 2 och börjar ett tal som anger antalet 
+De sista s raderna är villkor av typ 2 och börjar ett tal som anger antalet
 efterföljande tal på raden, följt av tal som representerar de olika rollerna som
 är med i respektive scen. Varje roll förekommer högst en gång på varje sådan
 rad, så antalet roller på en rad ligger mellan 2 och n.
 
-Fråga: Kan rollerna besättas med högst k st skådespelare så att p1 och p2 deltar 
+Fråga: Kan rollerna besättas med högst k st skådespelare så att p1 och p2 deltar
 men inte är med i samma scener som varandra?
 _Exempel:_ på godkända indata
 
@@ -451,7 +460,7 @@ nej-instans: | ja-instans:
 3 1 3 4      | 3 2 3 5
 2 3 5        | 3 2 4 6
 3 2 3 5      | 3 2 3 6
-             | 2 1 6 
+             | 2 1 6
 
 ### Uppgift
 I den här laborationen ska du visa att rollbesättningsproblemet är NP-svårt
@@ -476,32 +485,33 @@ in en för stor instans. Du får redovisa din reduktion om du kan bevisa att den
 är korrekt, oavsett om [Kattis][] har godkänt den eller inte.
 
 ### Graffärgning
-Indata: En oriktad graf och ett antal färger m. Isolerade hörn och dubbelkanter 
+Indata: En oriktad graf och ett antal färger m. Isolerade hörn och dubbelkanter
 kan förekomma, inte öglor.
 
 Fråga: Kan hörnen i grafen färgas med högst m färger så att inga grannar har
 samma färg?
 
-Indataformat: 
-Rad ett: tal V (antal hörn, V≥1) 
-Rad två: tal E (antal kanter, E≥0) 
-Rad tre: mål m (maxantal färger, m≥1) 
-En rad för varje kant (E stycken) med kantens ändpunkter (hörnen numreras från 1 
+Indataformat:
+Rad ett: tal V (antal hörn, V≥1)
+Rad två: tal E (antal kanter, E≥0)
+Rad tre: mål m (maxantal färger, m≥1)
+En rad för varje kant (E stycken) med kantens ändpunkter (hörnen numreras från 1
 till V)
 ### Hamiltonsk cykel
 Indata: En riktad graf.
-Fråga: Finns det en tur längs kanter i grafen som börjar och slutar på samma 
+Fråga: Finns det en tur längs kanter i grafen som börjar och slutar på samma
 ställe och som passerar varje hörn exakt en gång?
 
-Indataformat: 
-Rad ett: tal V (antal hörn, V≥1) 
-Rad två: tal E (antal kanter E≥0) 
-En rad för varje kant (E stycken) med kantens starthörn och sluthörn (hörnen 
+Indataformat:
+Rad ett: tal V (antal hörn, V≥1)
+Rad två: tal E (antal kanter E≥0)
+En rad för varje kant (E stycken) med kantens starthörn och sluthörn (hörnen
 numreras från 1 till V)
 
 [Parkour]: http://www.csc.kth.se/tcs/projects/cerise/parprogrammering/
 [Java file]: http://download.oracle.com/javase/tutorial/essential/io/fileio.html
 [Java string]: http://download.oracle.com/javase/tutorial/i18n/text/string.html
+[Kattis]: https://kth.kattis.scrool.se/
 [adkspelling]: https://kth.kattis.scrool.se/problems/adkspelling
 [adkreducetoflow]: https://kth.kattis.scrool.se/problems/oldkattis:adkreducetoflow
 [adkmaxflow]: https://kth.kattis.scrool.se/problems/oldkattis:adkmaxflow
