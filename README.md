@@ -1,8 +1,8 @@
 # Algoritmer, datastrukturer och komplexitet (ADK)
 Detta repo innehåller Max Nordlunds och Angelina von Gegerfelts labbar i ADK.
 Koden är licenserade under MIT, men vi vill påminna om att inte plagiera även om
-licensen tillåter det. MIT kräver dock att man lägger till licensen när man ska
-distribuera koden.
+licensen skulle tillåta det. MIT kräver dock att man lägger till licensen när
+man ska distribuera koden.
 
 ## Labb 1: Konkordans
 En konkordans är en databas där man kan slå upp ord och då få se alla
