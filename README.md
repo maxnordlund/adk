@@ -33,8 +33,8 @@ ttelseorganisationen CIA. Men komplexiteten hos de föreningar som kemiste
 ### Parprogrammering
 Denna labb måste genomföras i tvåpersonsgrupper som arbetar enligt den agila
 programutvecklingstekniken parprogrammering. Ni ska också använda verktyget
-Parkour som hjälper er att hålla koll på er parprogrammering. Läs vad
-parprogrammering är och hur man använder Parkour.
+Parkour som hjälper er att hålla koll på er parprogrammering.
+Läs [vad parprogrammering är och hur man använder Parkour][Parkour].
 
 ### Krav
 Följande krav ställs på din lösning:
@@ -57,7 +57,6 @@ Följande krav ställs på din lösning:
 * Man ska kunna söka efter ett ord, till exempel "bil", genom att i
   terminalfönstret ge kommandot konkordans bil (Om du använt C, C++ eller
   liknande) eller java Konkordans bil (om du använt Java).
-
   Svaret måste komma inom en sekund på en av skolans Ubuntudatorer.
 * Sökprogrammet ska inte läsa igenom hela texten och får inte använda speciellt
   mycket internminne. Internminnesbehovet ska inte växa med antalet distinkta
@@ -66,17 +65,18 @@ Följande krav ställs på din lösning:
 
 ### Tips
 
-Texten, som ligger på /info/adk14/labb1/korpus, är en stor fil och ska inte i
+Texten, som ligger på `/info/adk14/labb1/korpus`, är en stor fil och ska inte i
 sin helhet läsas in i internminnet under sökningen. Istället bör sökprogrammet
 öppna filen och hoppa till dom avsnitt som ska presenteras med seek (använd till
 exempel fseek i stdio.h i C eller seek i java.io.RandomAccessFile i Java).
 Texten har teckenkodningen ISO-8859-1, som också kallas ISO-Latin 1. Det betyder
 att varje tecken lagras i en byte. Du konverterar en bytearray b till String i
 Java med new String(b, "ISO-8859-1"). I andra riktningen: en String s
-konverteras till en bytearray i ISO-8859-1 med s.getBytes("ISO-8859-1"). Mer
-information om teckenkonvertering i Java finns här. I C är konvertering mellan
-ISO-8859-1 och Unicode-kodningar svårare. Om du använder C räcker det att
-sökprogrammet kan användas med teckenkodningen ISO-8859-1.
+konverteras till en bytearray i ISO-8859-1 med s.getBytes("ISO-8859-1").
+
+Mer information om teckenkonvertering i Java finns [här][Java string]. I C är
+konvertering mellan ISO-8859-1 och Unicode-kodningar svårare. Om du använder C
+räcker det att sökprogrammet kan användas med teckenkodningen ISO-8859-1.
 
 Ta ingen kopia av textfilen utan låt sökprogrammet använda ursprungstextfilen på
 kurskatalogen.
@@ -88,40 +88,60 @@ indexet. Låt det ligga på en fil (eller flera filer) och positionera med hjäl
 av seek även i denna fil.
 
 Indexfilerna blir stora och får nog inte plats på din skivminnesarea, så skapa
-dom istället på temporärarean /var/tmp och ta bort dom när du är klar.
+dom istället på temporärarean `/var/tmp` och ta bort dom när du är klar.
 
 Använd gärna färdiga Unixverktyg som sort vid konstruktionen. En enkel
 tokeniserare (ett program som läser en text och plockar ut dom enskilda orden
-samt deras position i texten) finns på /info/adk14/labb1/tokenizer.c.
+samt deras position i texten) finns på `/info/adk14/labb1/tokenizer.c`.
 
 Du kan använda en Makefile eller ett shell-skript för att starta flera program
 (till exempel tokenizer och sort) när du konstruerar konkordansen. Kommandot som
 kör tokenizer och sort kan se ut ungefär så här:
+```shell
+/info/adk14/labb1/tokenizer < /info/adk14/labb1/korpus | sort > /var/tmp/ut
+```
+Eftersom Ubuntu normalt använder UTF-8 behöver du sätta shellvariabeln
+LC_COLLATE till C (med kommandot `export LC_COLLATE=C` i bash) innan du kör
+sort. Detta gör att sort tolkar texten som ISO-8859-1 och därmed sorterar
+tecknen i ordningen A B C ... Z a b c ... z Ä Å Ö ä å ö.
 
-/info/adk14/labb1/tokenizer < /info/adk14/labb1/korpus | sort > /var/tmp/ut 
+Testa ditt program noga. Tänk ut svåra testfall (olika ytterligheter som
+enbokstavsord, första eller sista ordet i korpusen eller i indexet etc).
 
-Eftersom Ubuntu normalt använder UTF-8 behöver du sätta shellvariabeln LC_COLLATE till C (med kommandot
-export LC_COLLATE=C 
-i bash) innan du kör sort. Detta gör att sort tolkar texten som ISO-8859-1 och därmed sorterar tecknen i ordningen A B C ... Z a b c ... z Ä Å Ö ä å ö.
-Testa ditt program noga. Tänk ut svåra testfall (olika ytterligheter som enbokstavsord, första eller sista ordet i korpusen eller i indexet etc).
-Java är numera ganska snabbt, men just vid filhantering är det viktigt att man är noggrann när man använder Java. När du skapar konkordansen kommer du troligen att vilja skriva många gånger på en eller flera filer. Se till att de strömmar du konstruerar för skrivning (och läsning) är buffrade (läsning och skrivning på en RandomAccessFile kan inte buffras). Du kan läsa om Javas in- och utmatning i Java tutorial
-Vid redovisningen
+Java är numera ganska snabbt, men just vid filhantering är det viktigt att man
+är noggrann när man använder Java. När du skapar konkordansen kommer du troligen
+att vilja skriva många gånger på en eller flera filer. Se till att de strömmar
+du konstruerar för skrivning (och läsning) är buffrade (läsning och skrivning på
+en RandomAccessFile kan inte buffras). Du kan läsa om Javas in- och utmatning i
+[Java tutorial][Java file].
 
-Er labblösning ska redovisas för en labbhandledare vid något av kursens schemalagda labbpass och vid en av skolans Ubuntudatorer. I kursen används kösystemet SimaManager (kommandot sm) för att hålla reda på redovisningskön. Förbered redovisningen genom att ha genererat konkordansen och ha program, testfall, skisser och labbkvittona redo. Ni kommer då att få redovisa följande:
-Visa i Parkours statistik att ni har parprogrammerat.
-Visa en uppsättning testfall som ni har tagit fram för att kolla att programmet gör rätt. Ni ska också kunna motivera varför ni valt just dessa testfall.
-Visa att programmet fungerar och är tillräckligt snabbt för era testfall och labbhandledarens testfall.
-Visa och förklara hur lösningens datastrukturer på fil och i minnet fungerar.
-Visa programkoden och vara beredd att svara på frågor om den.
-Båda i labbgruppen ska kunna svara för hela programmet (vilket blir en naturlig följd av att ni parprogrammerat).
+### Vid redovisningen
+Er labblösning ska redovisas för en labbhandledare vid något av kursens
+schemalagda labbpass och vid en av skolans Ubuntudatorer. I kursen används
+kösystemet SimaManager (kommandot sm) för att hålla reda på redovisningskön.
+Förbered redovisningen genom att ha genererat konkordansen och ha program,
+testfall, skisser och labbkvittona redo. Ni kommer då att få redovisa följande:
+
+* Visa i Parkours statistik att ni har parprogrammerat.
+* Visa en uppsättning testfall som ni har tagit fram för att kolla att
+  programmet gör rätt. Ni ska också kunna motivera varför ni valt just dessa 
+  testfall.
+* Visa att programmet fungerar och är tillräckligt snabbt för era testfall och
+  labbhandledarens testfall.
+* Visa och förklara hur lösningens datastrukturer på fil och i minnet fungerar.
+* Visa programkoden och vara beredd att svara på frågor om den.
+
+Båda i labbgruppen ska kunna svara för hela programmet (vilket blir en naturlig
+följd av att ni parprogrammerat).
 
 ## Labb 2: Rättstavning
-I katalogen /info/adk14/labb2 finns ett Javaprogram som löser nedanstående
+
+I katalogen `/info/adk14/labb2` finns ett Javaprogram som löser nedanstående
 problem. Din uppgift är att snabba upp programmet så att det går ungefär 10000
 gånger snabbare. Korrekthet och effektivitet testas genom att din lösning
-skickas till Kattis. För att klara labben ska du bli godkänd av Kattis samt
-redovisa labben för en handledare. Börja med att logga in i Kattis och anmäla
-dig till adk14 i menyalternativet Kurser i översta menyn.
+skickas till [Kattis][]. För att klara labben ska du bli godkänd av [Kattis][]
+samt redovisa labben för en handledare. Börja med att logga in i [Kattis][] och
+anmäla dig till adk14 i menyalternativet Kurser i översta menyn.
 
 ### Problem
 Editeringsavståndet mellan två ord är det minimala antalet bokstavsoperationer
@@ -163,9 +183,9 @@ föregås av mellanslag. Ordlistan har högst en halv miljon ord och antalet
 felstavade ord i indata är högst 100.
 
 ### Exempel på körning
-En ordlistefil finns i /info/adk14/labb2/ordlista. Du kan provköra ditt program 
-genom att skriva in några felstavade ord (till exempel labd och dabbbhud) på 
-varsin rad i en fil (t.ex. testord.txt) och sedan köra
+En ordlistefil finns i `/info/adk14/labb2/ordlista`. Du kan provköra ditt
+program  genom att skriva in några felstavade ord (till exempel labd och
+dabbbhud) på  varsin rad i en fil (t.ex. testord.txt) och sedan köra
 
 ```shell
 spel01$ cat /info/adk14/labb2/ordlista testord.txt | java Main
@@ -176,26 +196,26 @@ dabbbhud (4) anbud dabba nabbad
 ### Uppgift
 Det givna Javaprogrammet löser visserligen ovanstående problem, men det tar
 timmar att få fram svaret. Du ska effektivisera programmet så att det hittar
-svaret inom den tidsgräns som Kattis ger.
+svaret inom den tidsgräns som [Kattis][] ger.
 
-Bra testfall att testa ditt program med finns på /info/adk14/labb2/testfall/
+Bra testfall att testa ditt program med finns på `/info/adk14/labb2/testfall/`
 
 Teoriuppgifterna ger uppslag om olika sätt att effektivisera programmet. Ditt
 optimerade program ska ha samma in- och utmatning som det givna programmet och
 det måste fortfarande vara Java.
 
-Kattis känner till problemet som adkspelling
+[Kattis][] känner till problemet som [adkspelling][]
 
 ## Labb 3: Flöden och matchningar
-Du ska i tre steg skriva ett program som får en bipartit graf som indata och 
-producerar en matchning av maximal storlek som utdata genom att reducera 
-(transformera) matchningsproblemet till flödesproblemet. Korrekthet och 
-effektivitet testas genom att lösningarna på de tre stegen skickas till Kattis. 
-För att klara labben ska du bli godkänd av Kattis på de tre stegen samt redovisa 
-labben för en handledare. Kattis kontrollerar både att programmet gör rätt och 
-att det löser problemet tillräckligt snabbt. Kattis klarar av programspråken 
-Java, C, C++ och Python, men tidskraven i denna labb gör att vi avråder från 
-Python.
+Du ska i tre steg skriva ett program som får en bipartit graf som indata och
+producerar en matchning av maximal storlek som utdata genom att reducera
+(transformera) matchningsproblemet till flödesproblemet. Korrekthet och
+effektivitet testas genom att lösningarna på de tre stegen skickas till
+[Kattis][].  För att klara labben ska du bli godkänd av [Kattis][] på de tre
+stegen samt redovisa  labben för en handledare. [Kattis][] kontrollerar både att
+programmet gör rätt och  att det löser problemet tillräckligt snabbt. [Kattis][]
+klarar av programspråken  Java, C, C++ och Python, men tidskraven i denna labb
+gör att vi avråder från  Python.
 
 ### Steg 1: Reducera problemet till flödesproblemet
 Du ska skriva ett program som löser matchningsproblemet med hjälp av en svart 
@@ -212,19 +232,19 @@ programstruktur:
 * Skriv utdata för matchningsproblemet till standard output.
 
 Se nedan hur in- och utdataformaten för matchnings- och flödesproblemen ser ut.
-Ditt program ska lösa problemet effektivt. Kattis kommer att provköra programmet 
-på bipartita grafer på upp till (5000+5000) hörn och upp till 10000 kanter. 
-Kattis känner till problemet som oldkattis:adkreducetoflow. Det finns ett 
-programskelett för steg 1 i några olika språk på katalogen 
-/info/adk14/labb3/exempelprogram
+Ditt program ska lösa problemet effektivt. [Kattis][] kommer att provköra
+programmet  på bipartita grafer på upp till (5000+5000) hörn och upp till 10000
+kanter. [Kattis][] känner till problemet som
+[oldkattis:adkreducetoflow][adkreducetoflow]. Det finns ett  programskelett för
+steg 1 i några olika språk på katalogen `/info/adk14/labb3/exempelprogram`
 
 ### Steg 2: Lös flödesproblemet
-Nu ska du skriva ett program som löser flödesproblemet. Programmet ska läsa 
-indata från standard input och skriva lösningen till standard output. Se nedan 
-hur in- och utdataformaten för flödesproblemet ser ut.
-Ditt program ska lösa problemet effektivt. Kattis kommer att provköra programmet 
-på generella flödesgrafer på upp till 2000 hörn och 10000 kanter. Kattis känner 
-till problemet som oldkattis:adkmaxflow.
+Nu ska du skriva ett program som löser flödesproblemet. Programmet ska läsa
+indata från standard input och skriva lösningen till standard output. Se nedan
+hur in- och utdataformaten för flödesproblemet ser ut. Ditt program ska lösa
+problemet effektivt. [Kattis][] kommer att provköra programmet  på generella
+flödesgrafer på upp till 2000 hörn och 10000 kanter. [Kattis][] känner  till
+problemet som [oldkattis:adkmaxflow][adkmaxflow].
 
 ### Steg 3: Kombinera steg 1 & 2
 I steg 1 löste du matchningsproblemet med hjälp av en lösning till
@@ -234,9 +254,10 @@ flödesinstansen över standard input och standard output till ett funktionsanro
 Programmet ska fortfarande läsa indata från standard input och skriva lösningen
 till standard output.
 
-Ditt program ska lösa problemet effektivt. Kattis kommer att provköra programmet
-på bipartita grafer på upp till (5000+5000) hörn och upp till 10000 kanter.
-Kattis känner till problemet som oldkattis:adkbipmatch.
+Ditt program ska lösa problemet effektivt. [Kattis][] kommer att provköra
+programmet på bipartita grafer på upp till (5000+5000) hörn och upp till 10000
+kanter. [Kattis][] känner till problemet som
+[oldkattis:adkbipmatch][adkbipmatch].
 
 ### Matchningsproblemet
 Givet en bipartit graf G = (X,Y,E) finn en maximal matchning.
@@ -252,12 +273,13 @@ låter vi X = {1, 2,..., a} och Y = {a+1, a+2,..., a+b}. En kant anges med
 ändpunkterna (först X-hörnet och sedan Y-hörnet).
 
 _Exempel:_ En graf kan till exempel kodas så här.
-2 3
-4
-1 3
-1 4
-2 3
-2 5
+--|--
+ 2| 3
+ 4| 
+ 1| 3
+ 1| 4
+ 2| 3
+ 2| 5
 Denna graf har alltså X = {1, 2} och Y = {3, 4, 5}. Kantmängden E innehåller 
 kanterna (1, 3), (1, 4), (2, 3) och (2, 5).
 
@@ -268,10 +290,11 @@ en rad för varje kant som ingår i matchningen. Kanten beskrivs av ett talpar p
 samma sätt som i indata.
 
 _Exempel:_ Om vi har grafen ovan som indata så kan utdata se ut så här.
-2 3
-2
-1 3
-2 5
+--|--
+ 2| 3
+ 2| 
+ 1| 3
+ 2| 5
 
 ### Flödesproblemet
 Givet en flödesgraf G = (V,E) finn ett maximalt flöde. Lös flödesproblemet med
@@ -305,14 +328,15 @@ Hörnen numreras från 1 och uppåt. Om man angett a hörn i V så låter vi V =
 hörnet) följt av dess kapacitet.
 
 _Exempel:_ En graf kan till exempel kodas så här.
-4
-1 4
-5
-1 2 1
-1 3 2
-2 4 2
-3 2 2
-3 4 1
+--|--|--
+ 4|  | 
+ 1| 4| 
+ 5|  | 
+ 1| 2| 1
+ 1| 3| 2
+ 2| 4| 2
+ 3| 2| 2
+ 3| 4| 1
 
 ### Utdata
 Den första raden består av ett heltal som anger antalet hörn i V.
@@ -322,30 +346,31 @@ flöde. Därefter skrivs en rad för varje sådan kant. Kanten beskrivs av tre t
 på liknande sätt som i indata, men i stället för kapacitet har vi nu flöde.
 
 _Exempel:_ Om vi har grafen ovan som indata så kan utdata se ut så här.
-4
-1 4 3
-5
-1 2 1
-1 3 2
-2 4 2
-3 2 1
-3 4 1
+--|--|--
+ 4|  | 
+ 1| 4| 3
+ 5|  | 
+ 1| 2| 1
+ 1| 3| 2
+ 2| 4| 2
+ 3| 2| 1
+ 3| 4| 1
 
 ### Testning
-I katalogen /info/adk14/labb3 ligger programmen bipgen, flowgen, maxflow, 
+I katalogen `/info/adk14/labb3` ligger programmen bipgen, flowgen, maxflow, 
 combine och matchtest som du kan köra för att testa dina program.
 
 * Programmet bipgen genererar en slumpvis vald bipartit graf. Grafen skrivs på
   _standard output_ på ovan angivet format för indata till matchningsprogrammet.
-
+  ```shell
   /info/adk14/labb3/bipgen x y e 
-
+  ```
   ger en graf med x hörn i X, y hörn i Y och e kanter.
 * Programmet flowgen genererar en slumpvis vald flödesgraf. Grafen skrivs på 
   _standard output_ på ovan angivet format för indata till flödesprogrammet. 
-
+  ```shell
   /info/adk14/labb3/flowgen v e c 
-
+  ```
   ger en graf med v hörn och e kanter vars kapaciteter är positiva heltal inte 
   större än c.
 * Programmet maxflow löser flödesproblemet och kan användas som svart låda i
@@ -353,10 +378,10 @@ combine och matchtest som du kan köra för att testa dina program.
   maximalt flöde på _standard output_.
 * Programmet combine är ett hjälpprogram som du kan använda dig av i steg 1 för
   att få ditt program att prata med den svarta lådan.
-
+  ```shell
   /info/adk14/labb3/combine java MatchReduce \; /info/adk14/labb3/maxflow <
   graffil > matchfil 
-
+  ```
   kommer att köra java MatchReduce som lösning på steg 1, och använda kursens
   maxflow-program som svart låda. Indatagrafen tas från filen graffil och utdata
   skickas till filen matchfil.
@@ -364,18 +389,20 @@ combine och matchtest som du kan köra för att testa dina program.
   (alltså, först grafen och sedan matchningen) och kontrollerar att matchningen
   är maximalt stor. Utdata skrivs på standard outputoch kan vara Matchning av 
   maximal storlek, Matchning av mindre än maximal storlek eller Ingen matchning.
-
   Så här kan du använda bipgen och matchtest för att testa din lösning på steg 3
   (minlabb).
-
+  ```shell
   /info/adk14/labb3/bipgen 5000 5000 10000 > graffil  minlabb < graffil > 
-  matchfil  cat graffil matchfil | /info/adk14/labb3/matchtest
-* Bra testfall att testa de tre stegen med finns på /info/adk14/labb3/testfall/
+  matchfil
+  cat graffil matchfil | /info/adk14/labb3/matchtest
+  ```
+* Bra testfall att testa de tre stegen med finns på
+  `/info/adk14/labb3/testfall/`
 
-Om du inte vet vad tecknen >, < och | betyder i exemplen ovan så kan du titta i
-Unixhäftet eller fråga en labbhandledare. För att kolla hur lång tid ditt
-program kör på dina egna testfall kan du använda kommandot time och titta på
-user time.
+Om du inte vet vad tecknen `>`, `<` och `|` betyder i exemplen ovan så kan du
+titta i Unixhäftet eller fråga en labbhandledare. För att kolla hur lång tid
+ditt program kör på dina egna testfall kan du använda kommandot time och titta
+på user time.
 
 ## Labb 4: NP-fullständighetsreduktioner - Rollbesättning
 Ansvarig för castingen på ett filmbolag behöver koppla ihop rätt skådespelare
@@ -427,27 +454,28 @@ nej-instans: | ja-instans:
              | 2 1 6 
 
 ### Uppgift
-I den här laborationen ska du visa att rollbesättningsproblemet är NP-svårt 
-genom att reducera ett känt NP-fullständigt problem, som finns inlagt i Kattis. 
-Din reducerade instans kommer att granskas och lösas av Kattis. Du får välja 
-mellan att reducera problemen Graffärgning (problem-id: oldkattis:adkreduction1) 
-och Hamiltonsk cykel oldkattis:adkreduction2). Indataformat för dessa problem 
-beskrivs nedan. Din uppgift är alltså att implementera en reduktion, inte att 
+I den här laborationen ska du visa att rollbesättningsproblemet är NP-svårt
+genom att reducera ett känt NP-fullständigt problem, som finns inlagt i
+[Kattis][].  Din reducerade instans kommer att granskas och lösas av [Kattis][].
+Du får välja  mellan att reducera problemen Graffärgning (problem-id:
+[oldkattis:adkreduction1][adkreduction1])  och Hamiltonsk cykel
+[oldkattis:adkreduction2][adkreduction2]). Indataformat för dessa problem
+beskrivs nedan. Din uppgift är alltså att implementera en reduktion, inte att
 lösa problemet.
 
-Kattis testar om din reduktion är korrekt, men du måste naturligtvis kunna 
-bevisa att den är det vid redovisningen. Kattis svar är egentligen avsedda att 
-vägleda dig i arbetet med beviset och påpeka om du glömt något viktigt 
-specialfall. Vid redovisningen kommer handledaren också att fråga varför 
+[Kattis][] testar om din reduktion är korrekt, men du måste naturligtvis kunna
+bevisa att den är det vid redovisningen. [Kattis][] svar är egentligen avsedda
+att  vägleda dig i arbetet med beviset och påpeka om du glömt något viktigt
+specialfall. Vid redovisningen kommer handledaren också att fråga varför
 problemet ligger i NP och vad komplexiteten är för din reduktion.
 
-Vid rättningen utnyttjas en lösare för instanser av ett (annat) NP-fullständigt 
-problem inom rimliga storleksgränser. Av tekniska skäl har Kattis en maximal 
-tillåten storlek på instanserna. Du får bara meddelanden om den ifall du skickar 
-in en för stor instans. Du får redovisa din reduktion om du kan bevisa att den 
-är korrekt, oavsett om Kattis har godkänt den eller inte.
+Vid rättningen utnyttjas en lösare för instanser av ett (annat) NP-fullständigt
+problem inom rimliga storleksgränser. Av tekniska skäl har [Kattis][] en maximal
+tillåten storlek på instanserna. Du får bara meddelanden om den ifall du skickar
+in en för stor instans. Du får redovisa din reduktion om du kan bevisa att den
+är korrekt, oavsett om [Kattis][] har godkänt den eller inte.
 
-#### Graffärgning
+### Graffärgning
 Indata: En oriktad graf och ett antal färger m. Isolerade hörn och dubbelkanter 
 kan förekomma, inte öglor.
 
@@ -460,7 +488,7 @@ Rad två: tal E (antal kanter, E≥0)
 Rad tre: mål m (maxantal färger, m≥1) 
 En rad för varje kant (E stycken) med kantens ändpunkter (hörnen numreras från 1 
 till V)
-#### Hamiltonsk cykel
+### Hamiltonsk cykel
 Indata: En riktad graf.
 Fråga: Finns det en tur längs kanter i grafen som börjar och slutar på samma 
 ställe och som passerar varje hörn exakt en gång?
@@ -470,3 +498,13 @@ Rad ett: tal V (antal hörn, V≥1)
 Rad två: tal E (antal kanter E≥0) 
 En rad för varje kant (E stycken) med kantens starthörn och sluthörn (hörnen 
 numreras från 1 till V)
+
+[Parkour]: http://www.csc.kth.se/tcs/projects/cerise/parprogrammering/
+[Java file]: http://download.oracle.com/javase/tutorial/essential/io/fileio.html
+[Java string]: http://download.oracle.com/javase/tutorial/i18n/text/string.html
+[adkspelling]: https://kth.kattis.scrool.se/problems/adkspelling
+[adkreducetoflow]: https://kth.kattis.scrool.se/problems/oldkattis:adkreducetoflow
+[adkmaxflow]: https://kth.kattis.scrool.se/problems/oldkattis:adkmaxflow
+[adkbipmatch]: https://kth.kattis.scrool.se/problems/oldkattis:adkbipmatch
+[adkreduction1]: https://kth.kattis.scrool.se/problems/oldkattis:adkreduction1
+[adkreduction2]: https://kth.kattis.scrool.se/problems/oldkattis:adkreduction2
