@@ -1,6 +1,8 @@
 VERSION := $(shell git tag -l v*.*.* | sort -r -n -t . | head -1)
 GITSHA1 := $(shell git rev-parse --short HEAD)
 GOFILES := $(shell find . -type f -and -name "*.go")
+GOHOSTOS := $(shell go env GOHOSTOS)
+GOHOSTARCH := $(shell go env GOHOSTARCH)
 GOFLAGS := -ldflags "-X main.Version $(VERSION) -X main.GitSHA $(GITSHA1)"
 DOCKER_IMAGE := konkordans-golang
 DOCKER_CONTAINER := konkordans-build
@@ -32,11 +34,19 @@ build/%: $(GOFILES)
 	GOOS=$(subst -, GOARCH=,$(*F)) go build $(GOFLAGS) -o \
 		$@$(if $(filter windows-%, $(*F)),.exe)
 
-docker-run: bin/$(VERSION)/$(shell go env GOHOSTOS)-$(shell go env GOHOSTARCH)
+# Automatically download the needed korpus
+data/korpus:
+	scp share-02.csc.kth.se:/info/adk14/labb1/korpus $@
+
+docker-run: data/korpus bin/$(VERSION)/$(GOHOSTOS)-$(GOHOSTARCH)
 	@$< --index
 	@$< komplexiteten
 
-run: $(GOFILES)
+install: data/korpus $(GOFILES)
 	@go install
-	@konkordans --index
-	@konkordans komplexiteten
+
+run: install
+	@labb1 --index
+	@labb1 komplexiteten
+
+.PHONY: clean default docker docker-run install run
