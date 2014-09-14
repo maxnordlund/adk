@@ -133,6 +133,7 @@ func (t *tokenizer) ReadToken() (advance uint64, token string, err error) {
 	if err != nil {
 		return
 	}
+	advance--
 
 	token, err = t.input.ReadString(0)
 	if len(token) > 0 {
