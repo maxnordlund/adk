@@ -1,12 +1,12 @@
-VERSION := $(shell git tag -l v*.*.* | sort -r -n -t . | head -1)
-GITSHA1 := $(shell git rev-parse --short HEAD)
-GOFILES := $(shell find . -type f -and -name "*.go")
-GOHOSTOS := $(shell go env GOHOSTOS)
+VERSION    := $(shell git tag -l v*.*.* | sort -r -n -t . | head -1)
+GITSHA1    := $(shell git rev-parse --short HEAD)
+GOFILES    := $(shell find . -type f -and -name "*.go")
+GOHOSTOS   := $(shell go env GOHOSTOS)
 GOHOSTARCH := $(shell go env GOHOSTARCH)
-GOFLAGS := -ldflags "-X main.Version $(VERSION) -X main.GitSHA $(GITSHA1)"
-DOCKER_IMAGE := konkordans-golang
+GOFLAGS    := -ldflags "-X main.Version $(VERSION) -X main.GitSHA $(GITSHA1)"
+DOCKER_IMAGE     := konkordans-golang
 DOCKER_CONTAINER := konkordans-build
-DOCKER_SRC_PATH := /go/src/github.com/maxnordlund/adk/labb1
+DOCKER_SRC_PATH  := /go/src/github.com/maxnordlund/adk/labb1
 
 default: $(shell echo bin/$(VERSION)/{darwin,linux,windows}-{amd64,386})
 	@true
