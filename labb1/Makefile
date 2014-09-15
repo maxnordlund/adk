@@ -13,11 +13,10 @@ default: $(shell echo bin/$(VERSION)/{darwin,linux,windows}-{amd64,386})
 
 # Remove built binaries and Docker containers
 clean:
-	$(eval NAMES := $(shell docker ps -a | tail -n +2 |
-		grep -Eo "konkordans-build_.*"))
+	$(eval NAMES := $(shell docker ps -a | grep -Eo "konkordans-build_.*"))
 	$(if $(NAMES),docker rm $(NAMES))
 	go clean -i
-	rm -fr bin/v*.*.*
+	rm -fr bin/v*.*.* data/{index,lazy,search}
 
 # Build Docker container
 docker:
