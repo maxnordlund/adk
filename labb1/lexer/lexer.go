@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"code.google.com/p/go.text/transform"
 	"io"
-	"math"
 )
 
 // Alphabet in Latin-1 order
 const (
-	ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÅÖ"
-	BASE     = len(ALPHABET) + 1
+	ALPHABET  = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÅÖ"
+	BASE      = uint64(len(ALPHABET) + 1)
+	MAX_VALUE = BASE*BASE*BASE + 1
 )
 
 // Normalization translation table
@@ -43,8 +43,8 @@ func init() {
 	 * (t.ex. á, è. ü osv.).
 	 */
 
-	for i := 0; i < 256; i++ {
-		u2l[i] = 0
+	for i := rune(0); i < 256; i++ {
+		runes[i] = 0
 	}
 
 	for _, s := range ALPHABET {
@@ -139,13 +139,13 @@ type tokenizer struct {
 	position uint64
 }
 
-func New(reader io.Reader) {
-	return &tokenizer{bufio.NewReader(transform.NewReader(reader, normalize))}
+func New(reader io.Reader) *tokenizer {
+	return &tokenizer{bufio.NewReader(transform.NewReader(reader, normalize)), 0}
 }
 
 func (t *tokenizer) ReadToken() (advance uint64, token string, err error) {
 	// Consume non-alphabet characters
-	for ch := 0; ch == 0; ch, err = t.input.ReadByte() {
+	for ch := byte(0); ch == 0; ch, err = t.input.ReadByte() {
 		advance++
 		if err != nil {
 			return
@@ -161,7 +161,7 @@ func (t *tokenizer) ReadToken() (advance uint64, token string, err error) {
 	token, err = t.input.ReadString(0)
 	if len(token) > 0 {
 		// Remove the trailing zero byte
-		advance += len(token)
+		advance += uint64(len(token))
 		token = token[:len(token)-1]
 	}
 	return
