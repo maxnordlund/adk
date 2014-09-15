@@ -14,13 +14,15 @@ const (
 )
 
 // Normalization translation table
-var normalize table
+var normalize *table
 
-type table map[byte]byte
+type table struct {
+	tranlation map[byte]byte
+}
 
 func (t *table) Transform(dst, src []byte, atEOF bool) (int, int, error) {
 	for i, b := range src {
-		dst[i] = t[b]
+		dst[i] = t.tranlation[b]
 	}
 	return len(src), len(src), nil
 }
@@ -28,7 +30,6 @@ func (t *table) Transform(dst, src []byte, atEOF bool) (int, int, error) {
 func init() {
 	var ch rune
 	runes := make(map[rune]rune)
-	table = make(map[byte]byte)
 
 	// Början på översatt kod från tokenizer.c
 
@@ -108,8 +109,9 @@ func init() {
 
 	// Slut på översatt kod från tokenizer.c
 
+	normalize = &table{make(map[byte]byte)}
 	for from, to := range runes {
-		table[byte(from)] = byte(to)
+		normalize.tranlation[byte(from)] = byte(to)
 	}
 }
 
@@ -126,11 +128,11 @@ func Hash(word string) uint64 {
 	}
 }
 
-func hash(b byte) rune {
-	if table[b] == 0 {
+func hash(b byte) uint64 {
+	if normalize.tranlation[b] == 0 {
 		return 0
 	} else {
-		return table[b] - 'a' + 1
+		return uint64(normalize.tranlation[b] - 'a' + 1)
 	}
 }
 
