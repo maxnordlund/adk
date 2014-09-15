@@ -14,13 +14,11 @@ var normalize table
 
 type table map[byte]byte
 
-func (t *table) Transform(dst, src []byte, atEOF bool) (nd, ns int, err error) {
+func (t *table) Transform(dst, src []byte, atEOF bool) (int, int, error) {
 	for i, b := range src {
 		dst[i] = t[b]
-		nd = i
-		ns = i
 	}
-	return
+	return len(src), len(src), nil
 }
 
 func init() {
