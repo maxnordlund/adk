@@ -2,10 +2,13 @@ package index
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/gob"
 	"github.com/maxnordlund/adk/labb1/lexer"
 	"io"
+	"math"
 	"os"
+	"sort"
 )
 
 const SIZE = 8
@@ -77,6 +80,75 @@ func (si searchIndex) add(word string, position filePointer) {
 	si[word] = position
 }
 
-func Create() (err error) {
+// Index of three letter prefix to first word in search index file
+type lazyIndex map[uint64]filePointer
+
+func NewLazyIndex(name string, si searchIndex) (li lazyIndex, err error) {
+	search, err := os.Open(name)
+	if err != nil {
+		return
+	}
+	li = make(lazyIndex)
+
+	words := make([]string, 0, len(si))
+	for word, _ := range si {
+		words = append(words, word)
+	}
+	words = sort.Strings(words)
+
+	for i, word := range words {
+		buf := bytes.NewBuffer(make([]byte, 0, SIZE))
+		err = binary.Write(buf, binary.LittleEndian, si[word])
+		if err != nil {
+			return
+		}
+		_, err := search.Write(buf.Bytes())
+		if err != nil {
+			return
+		}
+		li.add(word, i*SIZE)
+	}
+	err = search.Close()
+	return
+}
+
+// Adds a index position for a word, only the minimum position is stored
+func (li lazyIndex) add(word string, position filePointer) {
+	i := lexer.Hash(word)
+	if position < li[i] {
+		li[i] = position
+	}
+}
+
+func (li lazyIndex) save(name string) (err error) {
+	lazy, err := os.Open(lazyPath)
+	if err != nil {
+		return
+	}
+	err = binary.Write(lazy, binary.LittleEndian, uint64(0))
+	if err != nil {
+		return
+	}
+	for i := 1; i <= uint64(math.Pow(lexer.BASE, 3))+1; {
+		j := i
+		for ; li[j] == 0; j++ {
+			// Find first non zero position
+		}
+
+		// Update i with the amount of gaps skipped
+		i += j - i + 1
+		position := li[j]
+
+		// Fill all gaps with the position found above
+		// It's OK to do it in reverse order since all gaps are filled with the same
+		// value, aka the first non zero position found above
+		for ; i <= j; j-- {
+			err = binary.Write(lazy, binary.LittleEndian, position)
+			if err != nil {
+				return
+			}
+		}
+	}
+	err = lazy.Close()
 	return
 }
