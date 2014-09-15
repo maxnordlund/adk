@@ -12,7 +12,7 @@ import (
 type lazyIndex map[uint64]filePointer
 
 func NewLazyIndex(name string, si searchIndex) (li lazyIndex, err error) {
-	search, err := os.Open(name)
+	search, err := os.Create(name)
 	if err != nil {
 		return
 	}
@@ -49,7 +49,7 @@ func (li lazyIndex) add(word string, position filePointer) {
 }
 
 func (li lazyIndex) save(name string) (err error) {
-	lazy, err := os.Open(name)
+	lazy, err := os.Create(name)
 	if err != nil {
 		return
 	}

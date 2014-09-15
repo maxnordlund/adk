@@ -10,7 +10,7 @@ import (
 type searchIndex map[string]filePointer
 
 func NewSearchIndex(name string, fi fileIndex) (si searchIndex, err error) {
-	index, err := os.Open("data/index")
+	index, err := os.Create(name)
 	if err != nil {
 		return
 	}
