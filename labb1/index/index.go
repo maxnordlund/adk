@@ -13,6 +13,23 @@ import (
 
 const SIZE = 8
 
+func Create() (err error) {
+	fi, err := NewFileIndex("data/korpus")
+	if err != nil {
+		return
+	}
+	si, err := NewSearchIndex("data/index", fi)
+	if err != nil {
+		return
+	}
+	li, err := NewLazyHashIndex("data/search", si)
+	if err != nil {
+		return
+	}
+	err = li.save("data/lazy")
+	return
+}
+
 // Pointer within a file
 type filePointer uint64
 
