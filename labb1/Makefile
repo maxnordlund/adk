@@ -13,13 +13,14 @@ default: $(shell echo bin/$(VERSION)/{darwin,linux,windows}-{amd64,386})
 
 # Remove built binaries and Docker containers
 clean:
-	$(eval NAMES := $(shell docker ps -a | tail -n +2 | grep -Eo "view-build_.*"))
+	$(eval NAMES := $(shell docker ps -a | tail -n +2 |
+		grep -Eo "konkordans-build_.*"))
 	$(if $(NAMES),docker rm $(NAMES))
 	go clean -i
 	rm -fr bin/v*.*.*
 
 # Build Docker container
-docker: clean
+docker:
 	docker build -t "$(DOCKER_IMAGE)" .
 
 # Compile the program using the above container
@@ -38,11 +39,11 @@ build/%: $(GOFILES)
 data/korpus:
 	scp share-02.csc.kth.se:/info/adk14/labb1/korpus $@
 
-docker-run: data/korpus bin/$(VERSION)/$(GOHOSTOS)-$(GOHOSTARCH)
+docker-run: bin/$(VERSION)/$(GOHOSTOS)-$(GOHOSTARCH) data/korpus
 	@$< --index
 	@$< komplexiteten
 
-install: data/korpus $(GOFILES)
+install: $(GOFILES) data/korpus
 	@go install
 
 run: install
