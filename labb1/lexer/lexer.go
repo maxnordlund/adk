@@ -4,10 +4,14 @@ import (
 	"bufio"
 	"code.google.com/p/go.text/transform"
 	"io"
+	"math"
 )
 
 // Alphabet in Latin-1 order
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÅÖ"
+const (
+	ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÅÖ"
+	BASE     = len(ALPHABET) + 1
+)
 
 // Normalization translation table
 var normalize table
@@ -106,6 +110,27 @@ func init() {
 
 	for from, to := range runes {
 		table[byte(from)] = byte(to)
+	}
+}
+
+func Hash(word string) uint64 {
+	switch len(word) {
+	case 0:
+		return 0
+	case 1:
+		return hash(word[0])
+	case 2:
+		return hash(word[1]) + hash(word[0])*BASE
+	default:
+		return hash(word[2]) + hash(word[1])*BASE + hash(word[0])*BASE*BASE
+	}
+}
+
+func hash(b byte) rune {
+	if table[b] == 0 {
+		return 0
+	} else {
+		return table[b] - 'a' + 1
 	}
 }
 
