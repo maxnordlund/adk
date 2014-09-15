@@ -9,9 +9,13 @@ import (
 	"math"
 	"os"
 	"sort"
+	"unsafe"
 )
 
-const SIZE = 8
+// Pointer within a file
+type filePointer uint64
+
+const SIZE = unsafe.Sizeof(filePointer(0))
 
 func Create() (err error) {
 	fi, err := NewFileIndex("data/korpus")
@@ -29,9 +33,6 @@ func Create() (err error) {
 	err = li.save("data/lazy")
 	return
 }
-
-// Pointer within a file
-type filePointer uint64
 
 // Index of word positions in the lexicon file
 type fileIndex map[string][]filePointer
