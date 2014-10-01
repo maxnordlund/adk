@@ -8,23 +8,43 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 
 public class Main {
+  private static int[][] matrix;
+
   public static void main(String args[]) throws IOException {
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     // Säkrast att specificera att UTF-8 ska användas, för vissa system har annan
     // standardinställning för teckenkodningen.
 
-    LinkedList<String> words = new LinkedList<String>();
+    int maxLength = Integer.MIN_VALUE;
     String word = stdin.readLine();
+    LinkedList<String> words = new LinkedList<String>();
     while (!word.equals("#")) {
+      if (word.length() > maxLength) {
+        maxLength = word.length();
+      }
       words.add(word);
       word = stdin.readLine();
     }
 
     while ((word = stdin.readLine()) != null) {
+      int i;
+      int j;
+      int wordLength = word.length();
       int minDist = Integer.MAX_VALUE;
+      String oldCandidate = "";
       LinkedList<String> minWords = new LinkedList<String>();
+
+      matrix = new int[wordLength+1][maxLength+1];
+
+      for (i = 0; i <= wordLength; i++) {
+        matrix[i][0] = i;
+      }
+      for (j = 0; j <= maxLength; j++) {
+        matrix[0][j] = j;
+      }
+
       for (String candidate : words) {
-        int dist = distance(word, candidate);
+        int dist = distance(word, candidate, oldCandidate, wordLength);
         if (dist < minDist) {
           minDist = dist;
           minWords = new LinkedList<String>();
@@ -32,6 +52,7 @@ public class Main {
         } else if (dist == minDist) {
           minWords.add(candidate);
         }
+        oldCandidate = candidate;
       }
 
       System.out.print(word + " (" + minDist + ")");
@@ -43,25 +64,30 @@ public class Main {
   }
 
   // Marked `private static final` to encourage inlining
-  private static final int distance(String w1, String w2) {
+  private static final int distance(String word, String candidate, String oldCandidate, int wordLength) {
     int i;
     int j;
+    int start = 1;
+    int candidateLength = candidate.length();
     int min;
-    int w1len = w1.length();
-    int w2len = w2.length();
-    int[][] matrix = new int[w1len+1][w2len+1];
 
-    for (i = 0; i <= w1len; i++) {
-      matrix[i][0] = i;
-    }
-    for (j = 0; j <= w2len; j++) {
-      matrix[0][j] = j;
+    if (candidateLength < oldCandidate.length()) {
+      min = candidateLength;
+    } else {
+      min = oldCandidate.length();
     }
 
-    for (i = 1; i <= w1len; i++) {
-      for (j = 1; j <= w2len; j++) {
+    for (i = 0; i < min; ++i) {
+      if (candidate.charAt(i) != oldCandidate.charAt(i)) {
+        break;
+      }
+      start++;
+    }
+
+    for (i = 1; i <= wordLength; i++) {
+      for (j = start; j <= candidateLength; j++) {
         min = matrix[i-1][j-1];
-        if (w1.charAt(i-1) != w2.charAt(j-1)) {
+        if (word.charAt(i-1) != candidate.charAt(j-1)) {
           min++;
         }
         if (min > matrix[i-1][j]) {
@@ -73,6 +99,6 @@ public class Main {
         matrix[i][j] = min;
       }
     }
-    return matrix[w1len][w2len];
+    return matrix[wordLength][candidateLength];
   }
 }
