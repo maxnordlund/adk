@@ -9,29 +9,35 @@ public class ClosestWords {
 
   int closestDistance = -1;
 
-  int partDist(String w1, String w2, int w1len, int w2len) {
-    if (w1len == 0)
-      return w2len;
-    if (w2len == 0)
-      return w1len;
-    int res = partDist(w1, w2, w1len - 1, w2len - 1) + 
-	(w1.charAt(w1len - 1) == w2.charAt(w2len - 1) ? 0 : 1);
-    int addLetter = partDist(w1, w2, w1len - 1, w2len) + 1;
-    if (addLetter < res)
-      res = addLetter;
-    int deleteLetter = partDist(w1, w2, w1len, w2len - 1) + 1;
-    if (deleteLetter < res)
-      res = deleteLetter;
-    return res;
-  }
+  int Distance(String w1, String w2, int w1len, int w2len) {
+    int i;
+    int j;
+    int[][] matrix = new int[w1len+1][w2len+1];
 
-  int Distance(String w1, String w2) {
-    return partDist(w1, w2, w1.length(), w2.length());
+    for (i = 0; i <= w1len; i++) {
+      matrix[i][0] = i;
+    }
+    for (j = 0; j <= w2len; j++) {
+      matrix[0][j] = j;
+    }
+
+    for (i = 1; i <= w1len; i++) {
+      for (j = 1; j <= w2len; j++) {
+        if (w1.charAt(i-1) == w2.charAt(j-1)) {
+          matrix[i][j] = matrix[i-1][j-1];
+        } else if (matrix[i-1][j] < matrix[i][j-1]) {
+          matrix[i][j] = 1 + matrix[i-1][j];
+        } else  {
+          matrix[i][j] = 1 + matrix[i][j-1];
+        }
+      }
+    }
+    return matrix[w1len][w2len];
   }
 
   public ClosestWords(String w, List<String> wordList) {
     for (String s : wordList) {
-      int dist = Distance(w, s);
+      int dist = Distance(w, s, w.length(), s.length());
       // System.out.println("d(" + w + "," + s + ")=" + dist);
       if (dist < closestDistance || closestDistance == -1) {
         closestDistance = dist;
