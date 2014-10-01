@@ -7,7 +7,7 @@ cd "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 javac -Werror Main.java || exit $?
 
 diff <(cat ordlista.txt testfall/testord*.indata | \
-  time java -agentlib:hprof=cpu=times,monitor=y Main) \
+  time java -agentlib:hprof=cpu=samples,interval=1 Main) \
   <(cat testfall/testord*.utdata)
 
 gprof2dot -f hprof -o java.hprof.dot -n 2.0 < java.hprof.txt
