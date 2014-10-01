@@ -12,6 +12,7 @@ public class ClosestWords {
   int Distance(String w1, String w2, int w1len, int w2len) {
     int i;
     int j;
+    int min;
     int[][] matrix = new int[w1len+1][w2len+1];
 
     for (i = 0; i <= w1len; i++) {
@@ -23,13 +24,17 @@ public class ClosestWords {
 
     for (i = 1; i <= w1len; i++) {
       for (j = 1; j <= w2len; j++) {
-        if (w1.charAt(i-1) == w2.charAt(j-1)) {
-          matrix[i][j] = matrix[i-1][j-1];
-        } else if (matrix[i-1][j] < matrix[i][j-1]) {
-          matrix[i][j] = 1 + matrix[i-1][j];
-        } else  {
-          matrix[i][j] = 1 + matrix[i][j-1];
+        min = matrix[i-1][j-1];
+        if (w1.charAt(i-1) != w2.charAt(j-1)) {
+          min++;
         }
+        if (min > matrix[i-1][j]) {
+          min = 1 + matrix[i-1][j];
+        }
+        if (min > matrix[i][j-1]) {
+          min = 1 + matrix[i][j-1];
+        }
+        matrix[i][j] = min;
       }
     }
     return matrix[w1len][w2len];
