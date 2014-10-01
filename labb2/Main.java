@@ -17,6 +17,7 @@ public class Main {
 
     int maxLength = Integer.MIN_VALUE;
     String word = stdin.readLine();
+    StringBuilder sb = new StringBuilder();
     LinkedList<String> words = new LinkedList<String>();
     while (!word.equals("#")) {
       if (word.length() > maxLength) {
@@ -36,10 +37,10 @@ public class Main {
 
       matrix = new int[wordLength+1][maxLength+1];
 
-      for (i = 0; i <= wordLength; i++) {
+      for (i = 0; i <= wordLength; ++i) {
         matrix[i][0] = i;
       }
-      for (j = 0; j <= maxLength; j++) {
+      for (j = 0; j <= maxLength; ++j) {
         matrix[0][j] = j;
       }
 
@@ -55,12 +56,17 @@ public class Main {
         oldCandidate = candidate;
       }
 
-      System.out.print(word + " (" + minDist + ")");
+      sb.append(word);
+      sb.append(" (");
+      sb.append(minDist);
+      sb.append(")");
       for (String candidate : minWords) {
-        System.out.print(" " + candidate);
+        sb.append(" ");
+        sb.append(candidate);
       }
-      System.out.println();
+      sb.append('\n');
     }
+    System.out.print(sb.toString());
   }
 
   // Marked `private static final` to encourage inlining
@@ -81,14 +87,14 @@ public class Main {
       if (candidate.charAt(i) != oldCandidate.charAt(i)) {
         break;
       }
-      start++;
+      ++start;
     }
 
-    for (i = 1; i <= wordLength; i++) {
-      for (j = start; j <= candidateLength; j++) {
+    for (i = 1; i <= wordLength; ++i) {
+      for (j = start; j <= candidateLength; ++j) {
         min = matrix[i-1][j-1];
         if (word.charAt(i-1) != candidate.charAt(j-1)) {
-          min++;
+          ++min;
         }
         if (min > matrix[i-1][j]) {
           min = 1 + matrix[i-1][j];
