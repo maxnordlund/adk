@@ -29,3 +29,6 @@ local.properties
 
 # TeXlipse plugin
 .texlipse
+
+# Class files
+*.class
