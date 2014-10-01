@@ -32,3 +32,7 @@ local.properties
 
 # Class files
 *.class
+
+# Profiling output
+*.hprof*
+profile.png
