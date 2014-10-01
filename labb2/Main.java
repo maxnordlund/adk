@@ -6,37 +6,73 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Main {
-
-  public static List<String> readWordList(BufferedReader input) throws IOException {
-    LinkedList<String> list = new LinkedList<String>();
-    while (true) {
-      String s = input.readLine();
-      if (s.equals("#"))
-        break;
-      list.add(s);
-    }
-    return list;
-  }
-
   public static void main(String args[]) throws IOException {
-    //    long t1 = System.currentTimeMillis();
     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
     // Säkrast att specificera att UTF-8 ska användas, för vissa system har annan
     // standardinställning för teckenkodningen.
-    List<String> wordList = readWordList(stdin);
-    String word;
+
+    LinkedList<String> words = new LinkedList<String>();
+    String word = stdin.readLine();
+    while (!word.equals("#")) {
+      words.add(word);
+      word = stdin.readLine();
+    }
+
     while ((word = stdin.readLine()) != null) {
-      ClosestWords closestWords = new ClosestWords(word, wordList);
-      System.out.print(word + " (" + closestWords.getMinDistance() + ")");
-      for (String w : closestWords.getClosestWords())
-        System.out.print(" " + w);
+      int minDist = Integer.MAX_VALUE;
+      LinkedList<String> minWords = new LinkedList<String>();
+      for (String candidate : words) {
+        int dist = distance(word, candidate);
+        if (dist < minDist) {
+          minDist = dist;
+          minWords = new LinkedList<String>();
+          minWords.add(candidate);
+        } else if (dist == minDist) {
+          minWords.add(candidate);
+        }
+      }
+
+      System.out.print(word + " (" + minDist + ")");
+      for (String candidate : minWords) {
+        System.out.print(" " + candidate);
+      }
       System.out.println();
     }
-    //    long tottime = (System.currentTimeMillis() - t1);
-    //    System.out.println("CPU time: " + tottime + " ms");
+  }
 
+  // Marked `private static final` to encourage inlining
+  private static final int distance(String w1, String w2) {
+    int i;
+    int j;
+    int min;
+    int w1len = w1.length();
+    int w2len = w2.length();
+    int[][] matrix = new int[w1len+1][w2len+1];
+
+    for (i = 0; i <= w1len; i++) {
+      matrix[i][0] = i;
+    }
+    for (j = 0; j <= w2len; j++) {
+      matrix[0][j] = j;
+    }
+
+    for (i = 1; i <= w1len; i++) {
+      for (j = 1; j <= w2len; j++) {
+        min = matrix[i-1][j-1];
+        if (w1.charAt(i-1) != w2.charAt(j-1)) {
+          min++;
+        }
+        if (min > matrix[i-1][j]) {
+          min = 1 + matrix[i-1][j];
+        }
+        if (min > matrix[i][j-1]) {
+          min = 1 + matrix[i][j-1];
+        }
+        matrix[i][j] = min;
+      }
+    }
+    return matrix[w1len][w2len];
   }
 }
