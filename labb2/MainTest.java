@@ -51,20 +51,20 @@ public class MainTest extends Main {
 				this.baseName + ".utdata")), "UTF-8");
 		this.stdout = new ByteArrayOutputStream();
 		Main.sb.setLength(0);
-		Main.wordList.clear();
+		ClosestWords.wordList.clear();
 	}
 
 	@Test
 	public void testExample() {
 		try {
-			MainTest.run(new BufferedReader(new InputStreamReader(this.stdin)),
+			Main.run(new BufferedReader(new InputStreamReader(this.stdin)),
 					new PrintStream(this.stdout));
-		} catch (IOException err) {
+		} catch (final IOException err) {
 			fail(err.toString());
 		}
 		try {
 			assertEquals(this.expected, this.stdout.toString("UTF-8"));
-		} catch (UnsupportedEncodingException err) {
+		} catch (final UnsupportedEncodingException err) {
 			fail(err.toString());
 		}
 	}
