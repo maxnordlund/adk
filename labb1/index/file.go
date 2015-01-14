@@ -1,6 +1,7 @@
 package index
 
 import (
+	"fmt"
 	"github.com/maxnordlund/adk/labb1/lexer"
 	"io"
 	"os"
@@ -14,6 +15,12 @@ func NewFileIndex(name string) (fi fileIndex, err error) {
 	if err != nil {
 		return
 	}
+	stat, err := korpus.Stat()
+	if err != nil {
+		return
+	}
+	size := stat.Size()
+	done := 0.0
 	tokenizer := lexer.New(korpus)
 	fi = make(fileIndex)
 	var (
@@ -25,6 +32,10 @@ func NewFileIndex(name string) (fi fileIndex, err error) {
 		advance, word, err = tokenizer.ReadToken()
 		position += filePointer(advance)
 		fi.add(word, position)
+		if int64(float64(position)/float64(size)*100) > int64(done) {
+			done = float64(position) / float64(size) * 100
+			fmt.Printf("\r%5.1f%% done from data/korpus", done)
+		}
 	}
 	if err != io.EOF {
 		return
